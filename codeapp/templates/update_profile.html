@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="POST" id="profile_form">
+    {{ profile_form.csrf_token }}
+    <fieldset>
+        <legend class="border-bottom mb-4">Update profile</legend>
+        <div class="mb-3">
+            {{ profile_form.name.label(class="form-label") }}
+            {% if profile_form.name.errors %}
+                {{ profile_form.name(class="form-control form-control-lg is-invalid", placeholder="Fill in your updated name") }}
+                <div class="invalid-feedback">
+                    {% for error in profile_form.name.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ profile_form.name(class="form-control form-control-lg", placeholder="Fill in your updated name") }}
+            {% endif %}
+        </div>
+    </fieldset>
+    {{ profile_form.submit_profile(class="btn btn-primary") }}
+    <button type="reset" class="btn btn-secondary">Reset</button>
+</form>
+<form method="POST" style="margin-top: 40px;">
+    {{ password_form.csrf_token }}
+    <fieldset>
+        <legend class="border-bottom mb-4">Update password</legend>
+        <div class="mb-3">
+            {{ password_form.current_password.label(class="form-label") }}
+            {% if password_form.current_password.errors %}
+                {{ password_form.current_password(class="form-control form-control-lg is-invalid", placeholder="Fill in your current password") }}
+                <div class="invalid-feedback">
+                    {% for error in password_form.current_password.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ password_form.current_password(class="form-control form-control-lg", placeholder="Fill in your current password") }}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ password_form.new_password.label(class="form-label") }}
+            {% if password_form.new_password.errors %}
+                {{ password_form.new_password(class="form-control form-control-lg is-invalid", placeholder="Fill in your new password") }}
+                <div class="invalid-feedback">
+                    {% for error in password_form.new_password.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ password_form.new_password(class="form-control form-control-lg", placeholder="Fill in your new password") }}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ password_form.confirm_password.label(class="form-label") }}
+            {% if password_form.confirm_password.errors %}
+                {{ password_form.confirm_password(class="form-control form-control-lg is-invalid", placeholder="Repeat the new password") }}
+                <div class="invalid-feedback">
+                    {% for error in password_form.confirm_password.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ password_form.confirm_password(class="form-control form-control-lg", placeholder="Repeat the new password") }}
+            {% endif %}
+        </div>
+    </fieldset>
+    {{ password_form.submit_password(class="btn btn-primary", id="submit-2") }}
+    <button type="reset" class="btn btn-secondary">Reset</button>
+</form>
+
+{% endblock content %}
