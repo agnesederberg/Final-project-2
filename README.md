@@ -35,9 +35,12 @@ This project has the following features:
     - [Running the functional tests](#running-the-functional-tests)
     - [Checking code formatting](#checking-code-formatting)
   - [Validate the entire project](#validate-the-entire-project)
+- [Collaborating with colleagues](#collaborating-with-colleagues)
 - [Code snippets](#code-snippets)
   - [Python](#python)
-    - [New database class](#new-database-class)
+    - [Database-related code](#database-related-code)
+      - [New database class](#new-database-class)
+      - [Many-to-many association table](#many-to-many-association-table)
     - [New test class](#new-test-class)
   - [HTML](#html)
     - [New navbar item](#new-navbar-item)
@@ -143,11 +146,20 @@ If you are using macOS or Linux, run:
 
 ```./validate.sh```
 
+# Collaborating with colleagues
+
+To collaborate with colleagues, we recommend using the Live Share functionality. Instructions about this can be found here: https://code.visualstudio.com/learn/collaboration/live-share
+
+Also, in the videos about the final project, you have a video that shows how to accept the invitation, fork the project, and control who can access your final project.
+Make sure to follow those instructions.
+
 # Code snippets
 
 ## Python
 
-### New database class
+### Database-related code
+
+#### New database class
 
 A new database class is always put into the `models.py` file.
 It also always must have a primary key called `id`.
@@ -161,6 +173,37 @@ class <TableName>:
     id: int = field(
         init=False,
         metadata={"sa": Column(Integer(), primary_key=True, autoincrement=True)},
+    )
+```
+
+#### Many-to-many association table
+
+To create an association table, you should use the following code:
+
+```python
+<AssociationTableName> = Table(
+    "table_name",
+    db.metadata,
+    Column("<fk_1_name>", Integer(), ForeignKey("<table_name_1>.id"), primary_key=True),
+    Column("<fk_2_name>", Integer(), ForeignKey("<table_name_2>.id"), primary_key=True),
+)
+```
+
+Then, in each one of the tables associated by the association table, you should add the relationship:
+
+```python
+    <list_name>: List[<Table1Name>] = field(
+        init=False,
+        repr=False,
+        metadata={
+            "sa": relationship(
+                "<Table1Name>",
+                secondary=<AssociationTableName>,
+                back_populates="<list_name_other_table>",
+                cascade="all, delete",
+                lazy="dynamic"
+            )
+        },
     )
 ```
 
@@ -309,12 +352,16 @@ Some specific files within the `codeapp` folder also MUST NOT be changed:
 - config.py
 - tests/utils.py
 
+Note that you must not remove existing tests, or remove specific assertions that are in the project.
+
 # Suggestion for improvements
 
-If you are planning to develop a mid/large scale project, I recommend you split the Python files within the `codeapp` folder into modules, each one with their own `routes.py` and `forms.py` files. The same would be done for the files within the `templates` folder.
+If you are planning to develop a mid/large scale project, I recommend you split the Python files within the `codeapp` folder into modules, each one with their own `routes.py` and `forms.py` files.
+The same would be done for the files within the `templates` folder.
 
 # Contact
 
 Original repository URL: https://github.com/carlosnatalino/
 
-For questions and improvements, feel free to file issues in the GitHub repository. Please discuss any improvement suggestion in an issue before submitting pull requests.
+For questions and improvements, feel free to file issues in the GitHub repository.
+Please discuss any improvement suggestion in an issue before submitting pull requests.
