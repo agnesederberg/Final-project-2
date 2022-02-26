@@ -16,8 +16,6 @@ class TestUser(TestCase):
     password = "testing"
 
     def test_login_render(self) -> None:
-        x = db.session.execute(select(User)).scalars().one()
-        print(x)
         response = self.client.get(url_for("bp.login"))
         self.assert200(response)
         self.assert_html(response)
@@ -224,7 +222,7 @@ class TestUser(TestCase):
             # mocks an error when calling the commit() method
             # mock.commit.
             response = self.client.post(
-                url_for("bp./update_profile"),
+                url_for("bp.update_profile"),
                 data={
                     "current_password": "testing",
                     "new_password": "testingupdated",
