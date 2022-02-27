@@ -63,11 +63,15 @@ If not, this project requires/has been tested the following software:
 
 Once you have these software installed, you can compile the `requirements.txt` for development with:
 
-`pip-compile --output-file requirements.txt requirements.in requirements-dev.in`
+```shell
+pip-compile --output-file requirements.txt requirements.in requirements-dev.in
+```
 
 Then, you can install all the required packages with:
 
-`pip install --upgrade -r requirements.txt`
+```shell
+pip install --upgrade -r requirements.txt
+```
 
 ## Configurations for production
 
@@ -90,17 +94,23 @@ Here are some useful commands to use during development and project validation.
 
 In the terminal, run:
 
-```python manage.py run```
+```shell
+python manage.py run
+```
 
 If you get an error saying that `"Address already in use"`, you can specify a port number (for instance, `5005` in the example below):
 
-```python manage.py run --port 5005```
+```shell
+python manage.py run --port 5005
+```
 
 ### Running unit tests
 
 To run the unit tests and stop at the first failed test, in the terminal, run the following command:
 
-```pytest -sxk 'not functional'```
+```shell
+pytest -sxk 'not functional'
+```
 
 ### Running the functional tests
 
@@ -124,15 +134,21 @@ pytest --log-cli-level="INFO" -sxk functional
 
 To check if the imports are sorted correctly, run:
 
-```isort . --check --diff```
+```shell
+isort . --check --diff
+```
 
 To fix any issues, run:
 
-```isort .```
+```shell
+isort .
+```
 
 To check code formatting, run:
 
-```black . --check```
+```shell
+black . --check
+```
 
 ## Validate the entire project
 
@@ -140,11 +156,15 @@ To validate the entire project, run the following commands in the terminal.
 
 If you are using MS Windows, run:
 
-```.\validate.ps1```
+```powershell
+.\validate.ps1
+```
 
 If you are using macOS or Linux, run:
 
-```./validate.sh```
+```shell
+./validate.sh
+```
 
 # Collaborating with colleagues
 
