@@ -41,9 +41,9 @@ jobs:
     
     # deploying to heroku
     # more info: https://github.com/marketplace/actions/deploy-to-heroku
-    - uses: akhileshns/heroku-deploy@v3.12.12
-      with:
-        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-        heroku_app_name: ${{secrets.HEROKU_APP_NAME}} #Must be unique in Heroku
-        heroku_email: ${{secrets.HEROKU_EMAIL}}
-        dontautocreate: true
+    # - uses: akhileshns/heroku-deploy@v3.12.12
+    #   with:
+    #     heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+    #     heroku_app_name: ${{secrets.HEROKU_APP_NAME}} #Must be unique in Heroku
+    #     heroku_email: ${{secrets.HEROKU_EMAIL}}
+    #     dontautocreate: true
