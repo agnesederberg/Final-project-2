@@ -2,10 +2,6 @@ import logging
 from unittest.mock import patch
 
 from flask import url_for
-from sqlalchemy import select
-
-from codeapp import db
-from codeapp.models import User
 
 from .utils import TestCase
 

@@ -1,7 +1,4 @@
 import logging
-from unittest.mock import patch
-
-from flask import url_for
 
 from .utils import TestCase
 
@@ -24,6 +21,8 @@ class TestUpdate(TestCase):
         # one: Type = db.session.execute(statement).scalars().one()
 
         # now you make a request to get the update page of the object
+        # add the import:
+        # from flask import url_for
         # response = self.client.get(url_for("bp.<function name>", <obj id>=<one.id>))
         # self.assert200(response)
         # self.assertTemplateUsed("<template name>.html")
@@ -69,7 +68,10 @@ class TestUpdate(TestCase):
         # self.assert200(response)
         # self.assertTemplateUsed("<template name>.html")
         # self.assertIn("<expected error message>", response.data.decode())
-        # self.assertRedirects(response, url_for("bp.<function where the user should be redirected to>"))
+        # self.assertRedirects(
+        #     response,
+        #     url_for("bp.<function where the user should be redirected to>")
+        # )
         # self.assert_html(response)
 
     def test_form_exception(self) -> None:
@@ -84,6 +86,8 @@ class TestUpdate(TestCase):
         # statement: Select = select(<your table here>).limit(1)
         # one: Type = db.session.execute(statement).scalars().one()
 
+        # add the import:
+        # from unittest.mock import patch
         # with patch(
         #     "codeapp.routes.db.session.commit",
         #     side_effect=ValueError("Mock error"),

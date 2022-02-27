@@ -30,7 +30,10 @@ class TestDelete(TestCase):
         # self.assertIn("<expected error message>", response.data.decode())
 
         # the delete request usually redirects the user to some other page
-        # self.assertRedirects(response, url_for("bp.<function where the user should be redirected to>"))
+        # self.assertRedirects(
+        #     response,
+        #     url_for("bp.<function where the user should be redirected to>")
+        # )
         # self.assert_html(response)
 
         # first, get an object from the database
@@ -68,10 +71,16 @@ class TestDelete(TestCase):
         #     )
         #     self.assert200(response)
         #     self.assertTemplateUsed("<template name>.html")
-        #     self.assertIn("<expected error message>", response.data.decode())
+        #     self.assertIn(
+        #         "<expected error message>",
+        #         response.data.decode()
+        #     )
 
         #     the delete request usually redirects the user to some other page
-        #     self.assertRedirects(response, url_for("bp.<function where the user should be redirected to>"))
+        #     self.assertRedirects(
+        #         response,
+        #         url_for("bp.<function where the user should be redirected to>")
+        #     )
         #     self.assert_html(response)
 
 
