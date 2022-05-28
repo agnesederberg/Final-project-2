@@ -16,7 +16,7 @@
   <body>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
       <div class="container-fluid">
-        <a id="navbar_brand" class="navbar-brand" href="{{ url_for('bp.home') }}">EEN060/EEN065</a>
+        <a id="navbar_brand" class="navbar-brand" href="{{ url_for('bp.home') }}">Awesome Note Website</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -30,8 +30,8 @@
                 {% if request.url_rule.endpoint == "bp.home" %}
                 {% set class = class ~ " active" %}
                 {% endif %}
-                class="{{ class }}" 
-                aria-current="page" 
+                class="{{ class }}"
+                aria-current="page"
                 href="{{ url_for('bp.home') }}">
                 <i class="bi bi-app"></i>
                 Home
@@ -44,10 +44,23 @@
                 {% if request.url_rule.endpoint == "bp.about" %}
                 {% set class = class ~ " active" %}
                 {% endif %}
-                class="{{ class }}" 
+                class="{{ class }}"
                 href="{{ url_for('bp.about') }}">
                 <i class="bi bi-patch-question"></i>
                 About
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a aria-current="page"
+                {% set class="nav-link" %}
+                {% if request.url_rule.endpoint == "bp.folders" %}
+                {% set class = class ~ " active" %}
+                {% endif %}
+                class="{{ class }}"
+                href="{{ url_for('bp.folders') }}">
+                <i class="bi bi-app"></i>
+                Folders
               </a>
             </li>
 
@@ -62,7 +75,7 @@
                 {% if request.url_rule.endpoint == "bp.profile" %}
                 {% set class = class ~ " active" %}
                 {% endif %}
-                class="{{ class }}" 
+                class="{{ class }}"
                 href="{{ url_for('bp.profile') }}">
                 <i class="bi bi-person"></i>
                 {{ current_user.name }} - Profile
@@ -74,7 +87,7 @@
                 {% if request.url_rule.endpoint == "bp.logout" %}
                 {% set class = class ~ " active" %}
                 {% endif %}
-                class="{{ class }}" 
+                class="{{ class }}"
                 href="{{ url_for('bp.logout') }}">
                 <i class="bi bi-door-closed"></i>
                 Logout
@@ -87,7 +100,7 @@
                 {% if request.url_rule.endpoint == "bp.login" %}
                 {% set class = class ~ " active" %}
                 {% endif %}
-                class="{{ class }}" 
+                class="{{ class }}"
                 href="{{ url_for('bp.login') }}">
                 <i class="bi bi-door-open"></i>
                 Login
@@ -99,7 +112,7 @@
                 {% if request.url_rule.endpoint == "bp.register" %}
                 {% set class = class ~ " active" %}
                 {% endif %}
-                class="{{ class }}" 
+                class="{{ class }}"
                 href="{{ url_for('bp.register') }}">
                 <i class="bi bi-file-earmark-person"></i>
                 Register
@@ -136,5 +149,24 @@
     </footer>
     <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+      <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="{{ url_for('static', filename='index.js') }}"
+    ></script>
   </body>
 </html>

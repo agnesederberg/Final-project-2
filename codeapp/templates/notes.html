@@ -1,0 +1,46 @@
+{% extends "base.html" %} {% block title %}{{ folder.name }}{% endblock %} {% block content
+%}
+<h1 align="center">{{ folder.name }}</h1>
+<ul class="list-group list-group-flush" id="notes">
+  {% for note in folder.notes %}
+  <li class="list-group-item">
+      {% if search == None %}
+          {{ note.data }}
+            <button type="button" class="close" onClick="deleteNote({{ note.id }}, {{ note.folder_id }})">
+               <span aria-hidden="true">&times;</span>
+            </button>
+      {% elif search != None and search in note.data%}
+          {{ note.data }}
+              <button type="button" class="close" onClick="deleteNote({{ note.id }}, {{ note.folder_id }})">
+                <span aria-hidden="true">&times;</span>
+              </button>
+      {% endif %}
+
+
+  </li>
+  {% endfor %}
+</ul>
+<form method="POST">
+    <label for="note"></label><textarea name="note" id="note" class="form-control"></textarea>
+  <br />
+  <div align="center">
+    <button type="submit" class="btn btn-primary" name="submit" value="addNote">Add Note</button>
+  </div>
+</form>
+
+<form method="POST">
+    <label for="search"></label><textarea name="search" id="search" class="form-control"></textarea>
+  <br />
+  <div align="center">
+    <button type="submit" class="btn btn-primary" name="submit" value="search">Search note</button>
+  </div>
+</form>
+
+<form method="POST">
+
+  <br />
+  <div align="center">
+    <button type="submit" class="btn btn-primary" name="submit" value="clearSearch">Clear search</button>
+  </div>
+</form>
+{% endblock %}

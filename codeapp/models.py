@@ -1,10 +1,11 @@
 # python built-in imports
 from dataclasses import dataclass, field
+from datetime import date, datetime, time
 
 # python external modules
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, select
-from sqlalchemy.orm import registry
+from sqlalchemy import Column, Integer, String, select, func, Date, ForeignKey
+from sqlalchemy.orm import registry, relationship
 
 # app imports
 from codeapp import db, login_manager
@@ -33,4 +34,54 @@ class User(UserMixin):
     )
     password: str = field(
         repr=False, metadata={"sa": Column(String(128), nullable=False)}
+    )
+    folders = relationship('Folder', cascade="all,delete")
+
+
+@mapper_registry.mapped
+@dataclass
+class Category:
+    __tablename__ = "category"
+    __sa_dataclass_metadata_key__ = "sa"
+    id: int = field(
+        init=False,
+        metadata={"sa": Column(Integer(), primary_key=True, autoincrement=True)},
+    )
+    name: str = field(repr=False, metadata={"sa": Column(String(128), nullable=False)})
+    folders = relationship('Folder')
+
+
+@mapper_registry.mapped
+@dataclass
+class Folder:
+    __tablename__ = "folder"
+    __sa_dataclass_metadata_key__ = "sa"
+    id: int = field(
+        init=False,
+        metadata={"sa": Column(Integer(), primary_key=True, autoincrement=True)},
+    )
+    name: str = field(repr=False, metadata={"sa": Column(String(128), nullable=False)})
+    user_id: int = field(
+        metadata={"sa": Column(Integer(), ForeignKey('user.id'))},
+    )
+    category_id: int = field(
+        metadata={"sa": Column(Integer(), ForeignKey('category.id'), nullable=False)},
+    )
+    notes = relationship('Note', cascade="all,delete")
+
+
+@mapper_registry.mapped
+@dataclass
+class Note:
+    __tablename__ = "note"
+    __sa_dataclass_metadata_key__ = "sa"
+    id: int = field(
+        init=False,
+        metadata={"sa": Column(Integer(), primary_key=True, autoincrement=True)},
+    )
+    data: String = field(
+        metadata={"sa": Column(String(1000), nullable=False)},
+    )
+    folder_id: int = field(
+        metadata={"sa": Column(Integer, ForeignKey('folder.id'), nullable=False)},
     )
