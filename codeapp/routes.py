@@ -4,18 +4,18 @@ File that contains all the routes of the application.
 This is equivalent to the "controller" part in a model-view-controller architecture.
 """
 
+import json
 from typing import Union
 
-import json
 from flask import (
     Blueprint,
     current_app,
     flash,
+    jsonify,
     redirect,
     render_template,
     request,
     url_for,
-    jsonify,
 )
 from flask.wrappers import Response as FlaskResponse
 from flask_login import current_user, login_required, login_user, logout_user
@@ -30,8 +30,7 @@ from codeapp.forms import (
     UpdatePasswordForm,
     UpdateProfileForm,
 )
-from codeapp.models import User, Folder, Category, Note
-
+from codeapp.models import Category, Folder, Note, User
 
 Response = Union[str, FlaskResponse, WerkzeugResponse]
 
@@ -62,31 +61,33 @@ Add here the routes specific to your project.
 """
 
 
-@bp.route('/folders', methods=['GET', 'POST'])
+@bp.route("/folders", methods=["GET", "POST"])
 @login_required
 def folders():
     category = db.session.query(Category)
 
-    if request.method == 'POST':
-        folder = request.form.get('folder')
-        category = request.form.get('category')
+    if request.method == "POST":
+        folder = request.form.get("folder")
+        category = request.form.get("category")
 
         if len(folder) < 1:
-            flash('Folder name is too short!', category='error')
+            flash("Folder name is too short!", category="error")
         else:
-            new_folder = Folder(name=folder, category_id=category, user_id=current_user.id)
+            new_folder = Folder(
+                name=folder, category_id=category, user_id=current_user.id
+            )
             db.session.add(new_folder)
             db.session.commit()
-            flash('Folder added!', category='success')
+            flash("Folder added!", category="success")
         category = db.session.query(Category)
 
     return render_template("folders.html", user=current_user, category=category)
 
 
-@bp.route('/delete-folder', methods=['POST'])
+@bp.route("/delete-folder", methods=["POST"])
 def delete_folder():
     folder = json.loads(request.data)
-    folder_id = folder['folderId']
+    folder_id = folder["folderId"]
     folder = db.session.query(Folder).filter(Folder.id == folder_id).first()
     if folder:
         db.session.delete(folder)
@@ -95,11 +96,11 @@ def delete_folder():
     return jsonify({})
 
 
-@bp.route('/delete-note', methods=['POST'])
+@bp.route("/delete-note", methods=["POST"])
 @login_required
 def delete_note():
     note = json.loads(request.data)
-    note_id = note['noteId']
+    note_id = note["noteId"]
     note = db.session.query(Note).filter(Note.id == note_id).first()
     if note:
         db.session.delete(note)
@@ -108,27 +109,30 @@ def delete_note():
     return jsonify({})
 
 
-@bp.route('/folders/<int:folder_id>', methods=['POST', 'GET'])
+@bp.route("/folders/<int:folder_id>", methods=["POST", "GET"])
 def note_view(folder_id):
     folder = db.session.query(Folder).filter(Folder.id == folder_id).first()
     search = None
 
-    if request.method == 'POST':
-        if request.form['submit'] == 'addNote':
-            note = request.form.get('note')
+    if request.method == "POST":
+        if request.form["submit"] == "addNote":
+            note = request.form.get("note")
             if len(note) < 1:
-                flash('Note name is too short!', category='error')
+                flash("Note name is too short!", category="error")
             else:
                 new_note = Note(data=note, folder_id=folder.id)
                 db.session.add(new_note)
                 db.session.commit()
-                flash('Note added!', category='success')
-        elif request.form['submit'] == 'search':
-            search = request.form.get('search')
-        elif request.form['submit'] == 'clearSearch':
+                flash("Note added!", category="success")
+        elif request.form["submit"] == "search":
+            search = request.form.get("search")
+        elif request.form["submit"] == "clearSearch":
             search = None
 
-    return render_template('notes.html', folder=folder, user=current_user, search=search)
+    return render_template(
+        "notes.html", folder=folder, user=current_user, search=search
+    )
+
 
 """
 ############################ User-related routes ##############################
