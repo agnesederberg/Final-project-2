@@ -61,7 +61,7 @@ class Folder:
     )
     name: str = field(repr=False, metadata={"sa": Column(String(128), nullable=False)})
     user_id: int = field(
-        metadata={"sa": Column(Integer(), ForeignKey("user.id"))},
+        metadata={"sa": Column(Integer(), ForeignKey("user.id"), nullable=False)},
     )
     category_id: int = field(
         metadata={"sa": Column(Integer(), ForeignKey("category.id"), nullable=False)},
@@ -78,7 +78,7 @@ class Note:
         init=False,
         metadata={"sa": Column(Integer(), primary_key=True, autoincrement=True)},
     )
-    data: String = field(
+    data: str = field(
         metadata={"sa": Column(String(1000), nullable=False)},
     )
     folder_id: int = field(

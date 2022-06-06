@@ -1,5 +1,13 @@
 import logging
 
+from flask import url_for
+from sqlalchemy import func, select
+from sqlalchemy.sql.expression import Select
+
+from codeapp import db
+from codeapp.models import Folder, Note, User
+from codeapp.tests.test_user import TestUser
+
 from .utils import TestCase
 
 
@@ -82,6 +90,84 @@ class TestDelete(TestCase):
         #         url_for("bp.<function where the user should be redirected to>")
         #     )
         #     self.assert_html(response)
+
+    def test_delete_folder(self) -> None:
+        # the user needs to be logged in
+        temp = self.client.post(
+            url_for("bp.login"),
+            data={"email": TestUser.username, "password": TestUser.password},
+            follow_redirects=True,
+        )
+        self.assertTemplateUsed("home.html")
+        self.assertMessageFlashed("Welcome!", "success")
+
+        # get the user id
+        statement: Select = select(User).filter_by(email=TestUser.username)
+        user: User = db.session.execute(statement).scalars().one()
+
+        # find a folder to delete
+        folder_deletion: Select = (
+            select(Folder).filter_by(user_id=user.id).order_by(func.random()).limit(1)
+        )
+        folder: Folder = db.session.execute(folder_deletion).scalars().one()
+
+        # delete the folder
+        response = self.client.post(
+            url_for("bp.delete_folder"),
+            json={
+              "folderId": folder.id,
+            },
+            follow_redirects=True,
+        )
+
+        self.assert200(response)
+        self.assertTemplateUsed("folders.html")
+        self.assertIn(
+            "Folder deleted!",
+            response.data.decode(),
+        )
+
+    def test_delete_note(self) -> None:
+        # Loggin in
+        temp = self.client.post(
+            url_for("bp.login"),
+            data={"email": TestUser.username, "password": TestUser.password},
+            follow_redirects=True,
+        )
+        self.assertTemplateUsed("home.html")
+        self.assertMessageFlashed("Welcome!", "success")
+
+        # get the user id
+        statement: Select = select(User).filter_by(email=TestUser.username)
+        user: User = db.session.execute(statement).scalars().one()
+
+        # find a folder to delete note from
+        folder_deletion: Select = (
+            select(Folder).filter_by(user_id=user.id).order_by(func.random()).limit(1)
+        )
+        folder: Folder = db.session.execute(folder_deletion).scalars().one()
+
+        # select note to delete
+        note_deletion: Select = (
+            select(Note).filter_by(folder_id=folder.id).order_by(func.random()).limit(1)
+        )
+        note: Note = db.session.execute(note_deletion).scalars().one()
+
+        # delete the note
+        response = self.client.post(
+            url_for("bp.delete_note"),
+            json={
+                "noteId": note.id,
+            },
+            follow_redirects=True,
+        )
+
+        self.assert200(response)
+        self.assertTemplateUsed("notes.html")
+        self.assertIn(
+            "Note deleted!",
+            response.data.decode(),
+        )
 
 
 if __name__ == "__main__":

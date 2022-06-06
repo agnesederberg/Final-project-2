@@ -1,5 +1,9 @@
 import logging
 
+from flask import url_for
+
+from codeapp.tests.test_user import TestUser
+
 from .utils import TestCase
 
 
@@ -20,10 +24,48 @@ class TestSearch(TestCase):
         # self.assert_html(response)
 
     def test_search(self) -> None:
-        """
-        Example of test method.
-        Put below the code for the test.
-        """
+        # Logging in
+        temp = self.client.post(
+            url_for("bp.login"),
+            data={"email": TestUser.username, "password": TestUser.password},
+            follow_redirects=True,
+        )
+
+        self.assertTemplateUsed("home.html")
+        self.assertMessageFlashed("Welcome!", "success")
+
+        response = self.client.get(
+            "folders/1",
+            follow_redirects=True,
+        )
+        self.assert200(response)
+        self.assertTemplateUsed("notes.html")
+        self.assert_html(response)
+
+        response = self.client.post(
+            "folders/1",
+            data={
+                "submit": "search",
+                "search": "Go",
+            },
+            follow_redirects=True,
+        )
+
+        self.assertTemplateUsed("notes.html")
+        self.assertIn("Go to the stables before july", response.data.decode())
+        self.assert_html(response)
+
+        response = self.client.post(
+            "folders/1",
+            data={
+                "submit": "clearSearch",
+            },
+            follow_redirects=True,
+        )
+
+        self.assertTemplateUsed("notes.html")
+        self.assertIn("Go to the stables before july", response.data.decode())
+        self.assert_html(response)
 
 
 if __name__ == "__main__":

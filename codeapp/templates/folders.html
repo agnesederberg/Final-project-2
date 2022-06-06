@@ -1,27 +1,28 @@
-{% extends "base.html" %} {% block title %}Folders{% endblock %} {% block content
-%}
-<h1 align="center">Folders</h1>
+{% extends "base.html" %} {% block title %}Folders{% endblock %} {% block content %}
+    <h1 >Folders</h1>
 
 <ul class="list-group list-group-flush" id="folders">
   {% for folder in user.folders %}
-      <a href="/folders/{{ folder.id }}">
-          <button>{{ folder.name }}</button>
-      </a>
-          <button type="button" class="close" onClick="deleteFolder({{ folder.id }})">
-      <span aria-hidden="true">&times;</span>
-    </button>
+      <li>
+          <a href="/folders/{{ folder.id }}">
+              {{ folder.name }}
+          </a>
+          <button type="button" value="folderDelete" class="close" onClick="deleteFolder({{ folder.id }})">
+            <span aria-hidden="true">&times;</span>
+          </button>
+
       {% for category in category %}
           {% if folder.category_id == category.id %}
               <p>{{ category.name }}</p>
           {% endif %}
       {% endfor %}
-
+    </li>
   {% endfor %}
 </ul>
 
 <form method="POST">
-    <div align="center">
-            <textarea name="folder" id="folder" class="form-control"></textarea>
+    <div>
+        <label for="folder">Add a folder name</label><textarea name="folder" id="folder" class="form-control"></textarea>
             <button type="submit" class="btn btn-primary">Add Folder</button>
                     <label for="category">Choose a category:</label>
         <select name="category" id="category">

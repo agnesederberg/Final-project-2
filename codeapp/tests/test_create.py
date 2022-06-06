@@ -1,5 +1,9 @@
 import logging
 
+from flask import url_for
+
+from codeapp.tests.test_user import TestUser
+
 from .utils import TestCase
 
 
@@ -35,6 +39,73 @@ class TestCreate(TestCase):
         # self.assertTemplateUsed("<template name>.html")
         # self.assertIn("<expected error message>", response.data.decode())
         # self.assert_html(response)
+
+    def test_create_folder(self) -> None:
+        # Logging in
+        temp = self.client.post(
+            url_for("bp.login"),
+            data={"email": TestUser.username, "password": TestUser.password},
+            follow_redirects=True,
+        )
+
+        self.assertTemplateUsed("home.html")
+        self.assertMessageFlashed("Welcome!", "success")
+
+        response = self.client.get(
+            url_for('bp.folders'),
+            follow_redirects=True,
+        )
+        self.assert200(response)
+        self.assertTemplateUsed("folders.html")
+        self.assert_html(response)
+
+        response = self.client.post(
+            url_for('bp.folders'),
+            data={
+                "category": 1,
+                "folder": 'hej',
+            },
+            follow_redirects=True,
+        )
+
+        self.assert200(response)
+        self.assertTemplateUsed("folders.html")
+        self.assertIn("Folder added!", response.data.decode())
+        self.assert_html(response)
+
+    def test_create_note(self) -> None:
+        # Logging in
+        temp = self.client.post(
+            url_for("bp.login"),
+            data={"email": TestUser.username, "password": TestUser.password},
+            follow_redirects=True,
+        )
+
+        self.assertTemplateUsed("home.html")
+        self.assertMessageFlashed("Welcome!", "success")
+
+        response = self.client.get(
+            "folders/1",
+            follow_redirects=True,
+        )
+        self.assert200(response)
+        self.assertTemplateUsed("notes.html")
+        self.assert_html(response)
+
+        response = self.client.post(
+            "folders/1",
+            data={
+                "submit": "addNote",
+                "note": "woops",
+                "folder_id": 1,
+            },
+            follow_redirects=True,
+        )
+
+        self.assert200(response)
+        self.assertTemplateUsed("notes.html")
+        self.assertIn("Note added!", response.data.decode())
+        self.assert_html(response)
 
     def test_correctly_filled_form(self) -> None:
         """

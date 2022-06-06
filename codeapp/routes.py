@@ -11,7 +11,6 @@ from flask import (
     Blueprint,
     current_app,
     flash,
-    jsonify,
     redirect,
     render_template,
     request,
@@ -44,7 +43,6 @@ The routes below include general views open for all users.
 
 
 @bp.get("/")
-# @login_required  # TODO: check if your home route requires login or not
 def home() -> Response:
     return render_template("home.html")
 
@@ -63,67 +61,66 @@ Add here the routes specific to your project.
 
 @bp.route("/folders", methods=["GET", "POST"])
 @login_required
-def folders():
+def folders() -> Response:
     category = db.session.query(Category)
 
     if request.method == "POST":
-        folder = request.form.get("folder")
+        folder: str = request.form.get("folder")
         category = request.form.get("category")
 
-        if len(folder) < 1:
-            flash("Folder name is too short!", category="error")
-        else:
-            new_folder = Folder(
-                name=folder, category_id=category, user_id=current_user.id
-            )
-            db.session.add(new_folder)
-            db.session.commit()
-            flash("Folder added!", category="success")
+        new_folder = Folder(
+            name=folder, category_id=int(category), user_id=current_user.id
+        )
+        db.session.add(new_folder)
+        db.session.commit()
+        flash("Folder added!", category="success")
         category = db.session.query(Category)
 
     return render_template("folders.html", user=current_user, category=category)
 
 
-@bp.route("/delete-folder", methods=["POST"])
-def delete_folder():
+@bp.route("/delete-folder", methods=["POST", "GET"])
+def delete_folder() -> Response:
+    category = db.session.query(Category)
     folder = json.loads(request.data)
+    print(request.data)
     folder_id = folder["folderId"]
-    folder = db.session.query(Folder).filter(Folder.id == folder_id).first()
+    folder = db.session.query(Folder).filter(Folder.id == folder_id).one()
     if folder:
         db.session.delete(folder)
         db.session.commit()
+        flash("Folder deleted!", category="success")
 
-    return jsonify({})
+    return render_template("folders.html", user=current_user, category=category)
 
 
 @bp.route("/delete-note", methods=["POST"])
 @login_required
-def delete_note():
+def delete_note() -> Response:
     note = json.loads(request.data)
     note_id = note["noteId"]
     note = db.session.query(Note).filter(Note.id == note_id).first()
+    folder = db.session.query(Folder).filter(Folder.id == note.folder_id).first()
     if note:
         db.session.delete(note)
         db.session.commit()
+        flash("Note deleted!", category="success")
 
-    return jsonify({})
+    return render_template("notes.html", user=current_user, folder=folder)
 
 
 @bp.route("/folders/<int:folder_id>", methods=["POST", "GET"])
-def note_view(folder_id):
+def note_view(folder_id: int) -> Response:
     folder = db.session.query(Folder).filter(Folder.id == folder_id).first()
     search = None
 
     if request.method == "POST":
         if request.form["submit"] == "addNote":
             note = request.form.get("note")
-            if len(note) < 1:
-                flash("Note name is too short!", category="error")
-            else:
-                new_note = Note(data=note, folder_id=folder.id)
-                db.session.add(new_note)
-                db.session.commit()
-                flash("Note added!", category="success")
+            new_note = Note(data=note, folder_id=folder.id)
+            db.session.add(new_note)
+            db.session.commit()
+            flash("Note added!", category="success")
         elif request.form["submit"] == "search":
             search = request.form.get("search")
         elif request.form["submit"] == "clearSearch":
